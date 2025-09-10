@@ -23,7 +23,7 @@ export interface AnswerResult {
 })
 export class QuestionsService {
 
-  url = `http://localhost:8080/api`;
+  url = `https://backendquadquiz-production.up.railway.app/api`;
 
   constructor(private httpClient: HttpClient) {
   }
@@ -46,4 +46,5 @@ export class QuestionsService {
 
 
 }
+
 
