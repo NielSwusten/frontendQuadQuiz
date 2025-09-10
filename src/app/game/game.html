@@ -1,0 +1,88 @@
+<!-- game.html -->
+<div class="game-container">
+  <!-- Loading State -->
+  <div *ngIf="isLoading" class="loading">
+    <p>Loading questions...</p>
+  </div>
+
+  <!-- Checking Answers State -->
+  <div *ngIf="isCheckingAnswers" class="loading">
+    <p>Checking your answers...</p>
+  </div>
+
+  <!-- Error State -->
+  <div *ngIf="error" class="error">
+    <p>{{ error }}</p>
+    <button (click)="loadQuestions()">Try Again</button>
+  </div>
+
+  <!-- Results State -->
+  <div *ngIf="showResults && !isCheckingAnswers" class="results">
+    <h1>Quiz Complete!</h1>
+    <p class="score">Your Score: {{ getScore() }} / {{ quizResults.length }}</p>
+
+    <div class="results-details">
+      <h2>Results:</h2>
+      <div *ngFor="let result of quizResults; let i = index" class="result-item">
+        <p><strong>Question {{ i + 1 }}: {{questions[i].question}}</strong></p>
+        <p class="answer-status" [class.correct]="result.correct" [class.incorrect]="!result.correct">
+          {{ result.correct ? '✓ Correct' : '✗ Incorrect' }}
+        </p>
+        <p  class="correct-answer">
+          Correct answer: {{ result.correctAnswer }}
+        </p>
+      </div>
+    </div>
+
+    <div class="result-actions">
+      <a routerLink="/" routerLinkActive="active" [routerLinkActiveOptions]="{ exact: true }">
+        Back to Menu
+      </a>
+    </div>
+  </div>
+
+  <!-- Game Content -->
+  <div *ngIf="!isLoading && !error && !showResults && !isCheckingAnswers && questions.length > 0" class="quiz-content">
+
+
+
+    <!-- Question Counter -->
+    <div class="question-counter">
+      Question {{ currentQuestionIndex + 1 }} of {{ questions.length }}
+      <span class="difficulty-indicator">({{ getDifficultyDisplay() }})</span>
+    </div>
+
+    <!-- Timer -->
+    <div class="timer" [class.warning]="timer <= 10">
+      Time: {{ timer }}s
+    </div>
+
+    <!-- Current Question -->
+    <div *ngIf="getCurrentQuestion()" class="question-section">
+      <h1 class="question">{{ getCurrentQuestion()?.question }}</h1>
+
+      <div class="question-meta">
+        <span class="category">{{ getCurrentQuestion()?.category }}</span>
+
+      </div>
+
+      <h2>Answers</h2>
+      <div class="answers">
+        <button
+          *ngFor="let answer of getCurrentQuestion()?.answers; let i = index"
+          class="answer-btn"
+          [class.selected]="selectedAnswers[currentQuestionIndex] === answer"
+          (click)="selectAnswer(answer)">
+          {{ i + 1 }}. {{ answer }}
+        </button>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- No Questions State -->
+  <div *ngIf="!isLoading && !error && !showResults && questions.length === 0" class="no-questions">
+    <p>No questions available</p>
+    <button (click)="loadQuestions()">Reload</button>
+  </div>
+</div>
